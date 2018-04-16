@@ -194,7 +194,7 @@
             // Sanitise URL supplied values
             $_userId     = filter_var($_REQUEST['userId'], FILTER_SANITIZE_STRING);
             $_name       = filter_var($_REQUEST['name'], FILTER_SANITIZE_STRING);
-            $_nickName   = filter_var($_REQUEST['nickName'], FILTER_SANITIZE_STRING);
+            //$_nickName   = filter_var($_REQUEST['nickName'], FILTER_SANITIZE_STRING);
             $_email      = filter_var($_REQUEST['email'], FILTER_SANITIZE_STRING);
             $_locationId = filter_var($_REQUEST['locationId'], FILTER_SANITIZE_NUMBER_INT);
             $_totalStars = filter_var($_REQUEST['totalStars'], FILTER_SANITIZE_NUMBER_INT);
@@ -204,11 +204,11 @@
             // Attempt to run PDO prepared statement
             try {
                   // Insert User data in User table in PHP
-                  $sql  = "INSERT INTO users(userUid, name, nickname, email, photoURL, totalstars, PostFilter, PostalCode) VALUES(:userId, :name, :nickName, :email, '".$target_path."', :totalstars, '".$_postFilter."', :locationId )";
+                  $sql  = "INSERT INTO users(userUid, name, email, photoURL, totalstars, PostFilter, PostalCode) VALUES(:userId, :name, :email, '".$target_path."', :totalstars, '".$_postFilter."', :locationId )";
                   $stmt = $pdo->prepare($sql);
                   $stmt->bindParam(':userId', $_userId, PDO::PARAM_STR);
                   $stmt->bindParam(':name', $_name, PDO::PARAM_STR);
-                  $stmt->bindParam(':nickName', $_nickName, PDO::PARAM_STR);
+                  //$stmt->bindParam(':nickName', $_nickName, PDO::PARAM_STR);
                   $stmt->bindParam(':email', $_email, PDO::PARAM_STR);
                   $stmt->bindParam(':locationId', $_locationId, PDO::PARAM_INT);
                   $stmt->bindParam(':totalstars', $_totalStars, PDO::PARAM_INT);
@@ -288,25 +288,25 @@
       // Add Wishlist
       case "addWishlist":
 
-         // Sanitise URL supplied values
-         $_postId  = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
-         $_userUid = filter_var($_REQUEST['userUid'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+            // Sanitise URL supplied values
+            $_postId  = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+            $_userUid = filter_var($_REQUEST['userUid'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
 
-         // Attempt to run PDO prepared statement
-         try {
-            $sql   = "INSERT INTO wishlist(PostId, UserUid) VALUES(:postId, :userUid)";
-            $stmt  = $pdo->prepare($sql);
-            $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
-            $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
-            $stmt->execute();
+            // Attempt to run PDO prepared statement
+            try {
+                  $sql   = "INSERT INTO wishlist(PostId, UserUid) VALUES(:postId, :userUid)";
+                  $stmt  = $pdo->prepare($sql);
+                  $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+                  $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
+                  $stmt->execute();
 
-            echo json_encode(array('message' => 'Congratulations the record was added to the database'));
-         }
-         // Catch any errors in running the prepared statement
-         catch(PDOException $e)
-         {
-            echo $e->getMessage();
-         }
+                  echo json_encode(array('message' => 'Congratulations the record was added to the database'));
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
       
       break;
 
@@ -333,7 +333,55 @@
             {
                   echo $e->getMessage();
             }
+      break;
 
+      // Add like for a post
+      case "addLike":
+
+            // Sanitise URL supplied values
+            $_postId  = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+            $_userUid = filter_var($_REQUEST['userUid'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $sql   = "INSERT INTO likes(PostId, UserUid) VALUES(:postId, :userUid)";
+                  $stmt  = $pdo->prepare($sql);
+                  $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+                  $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
+                  $stmt->execute();
+
+                  echo json_encode(array('message' => 'Congratulations the record was added to the database'));
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+      break;
+
+      // Delete Like
+      case "deleteLike":
+      
+            // Sanitise URL supplied values
+            $_postId  = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+            $_userUid = filter_var($_REQUEST['userUid'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM likes WHERE UserUid = :userUid AND PostId = :postId";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+                  $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
+                  $stmt->execute();
+
+                  echo json_encode('Congratulations the record was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
       break;
    }
 
