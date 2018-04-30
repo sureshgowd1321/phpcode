@@ -17,54 +17,24 @@
                       );
   // Create a PDO instance (connect to the database)
   $pdo  = new PDO($dsn, $un, $pwd, $opt);
-  $data = array();
-                    
+  $data = array();          
 
   // Attempt to query database table and retrieve data
   try {
 
-    $_limitValue = 4;
+    $_userUid  = $_GET['userUid'];
 
-    $_userUid = $_GET['userId'];
-    $_mincount = $_GET['minCount'];
-    $_loadType = $_GET['loadType'];
+    // SQL Query Design
+    $sql = "SELECT * FROM wishlist Where UserUid = :userId ";
 
-    $sql = "SELECT * FROM wishlist ";
+    $sql .= "ORDER BY id DESC";
 
-    $sql .= "Where UserUid = :userId ";
+    $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
-    if( $_loadType === 'noload' ){
-
-        $sql .= "ORDER BY id DESC limit ";
-        $sql .= $_limitValue;
-
-        $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        
-    }else{
-        if( $_loadType === 'initialload' ){
-
-            $sql .= "ORDER BY id DESC limit ";
-            $sql .= $_limitValue;
-    
-            $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    
-        } elseif( $_loadType === 'scroll' ){
-            
-            $sql .= "AND id < :minCount ";
-    
-            $sql .= "ORDER BY id DESC limit ";
-            $sql .= $_limitValue;
-    
-            $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    
-            // Binding Parameters
-            $stmt-> bindParam(':minCount', $_mincount, PDO::PARAM_STR);
-    
-        }
-    }
-
+    // Bind Parameters
     $stmt-> bindParam(':userId', $_userUid, PDO::PARAM_STR);
 
+    // Execute SQL
     $stmt -> execute();
 
     while($row  = $stmt->fetch(PDO::FETCH_OBJ))

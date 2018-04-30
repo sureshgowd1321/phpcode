@@ -18,6 +18,7 @@
   // Create a PDO instance (connect to the database)
   $pdo  = new PDO($dsn, $un, $pwd, $opt);
   $data = array();
+                    
 
   // Attempt to query database table and retrieve data
   try {
@@ -35,9 +36,9 @@
     }
 
     // SQL Query Design
-    $sql = "SELECT * FROM posts WHERE CreatedById = :userId ";
+    $sql = "SELECT * FROM wishlist Where UserUid = :userId ";
 
-    $sql .= "ORDER BY ID DESC LIMIT $start, $rpp";
+    $sql .= "ORDER BY id DESC LIMIT $start, $rpp";
 
     $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
@@ -53,13 +54,13 @@
         $data[] = $row;
     }
 
-     // Return data as JSON
-     echo json_encode($data);
-
+    // Return data as JSON
+    echo json_encode($data);
   }
   catch(PDOException $e)
   {
      echo $e->getMessage();
   }
+
 
 ?>
