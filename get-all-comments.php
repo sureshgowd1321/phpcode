@@ -25,7 +25,7 @@
   // Determine which mode is being requested
   switch($key)
   {
-    // Add a new record to the technologies table
+    // Get all comments for each post
     case "totalCommentsPerPost":
 
       // Attempt to query database table and retrieve data commentedDate
@@ -57,7 +57,7 @@
 
     break;
 
-    // Add a new record to the technologies table
+    // Get Count of Comments for post
     case "countOfCommentsPerPost":
 
       // Attempt to query database table and retrieve data

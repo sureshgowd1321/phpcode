@@ -22,6 +22,11 @@
     // Attempt to query database table and retrieve data
     try {
 
+        $_userPostFilter  = $_GET['userPostFilter'];
+        $_userCity        = $_GET['postedCity'];
+        $_userState       = $_GET['postedState'];
+        $_userCountry     = $_GET['postedCountry'];
+
         // How many records per page
         $rpp = 4;
         $page = $_GET['page'];
@@ -35,11 +40,40 @@
 
         // SQL Query Design
         $sql = "SELECT * FROM posts ";
+        
+        // Filter posts based on User opted filter
+        if( $_userPostFilter === 'CT' ) {
 
+            // If User opted filter as City
+            $sql .= "WHERE City = :userCity ";
+
+        } elseif( $_userPostFilter === 'ST' ) {
+
+            // If User opted filter as State
+            $sql .= "WHERE State = :userState ";
+
+        } elseif( $_userPostFilter === 'CNTY' ) {
+
+            // If User opted filter as Country
+            $sql .= "WHERE Country = :userCountry ";
+
+        }
+        
+        // SQL Order by and it's limit offset value
         $sql .= "ORDER BY ID DESC LIMIT $start, $rpp";
 
+        // Preparing SQL
         $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         
+        // Binding Parameters
+        if( $_userPostFilter === 'CT' ) {
+            $stmt-> bindParam(':userCity', $_userCity, PDO::PARAM_STR);
+        }elseif( $_userPostFilter === 'ST' ) {
+            $stmt-> bindParam(':userState', $_userState, PDO::PARAM_STR);
+        }elseif( $_userPostFilter === 'CNTY' ) {
+            $stmt-> bindParam(':userCountry', $_userCountry, PDO::PARAM_STR);
+        }
+
         // Execute SQL
         $stmt -> execute();
 
