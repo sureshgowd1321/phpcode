@@ -51,8 +51,9 @@
             $stmt->bindParam(':postedState', $_postedState, PDO::PARAM_STR);
             $stmt->bindParam(':postedCountry', $_postedCountry, PDO::PARAM_STR);
             $stmt->execute();
+            $lastId = $pdo->lastInsertId();
 
-            echo json_encode(array('message' => 'Congratulations the record ' . $post . ' was added to the database'));
+            echo json_encode(array('id' => $lastId));
          }
          // Catch any errors in running the prepared statement
          catch(PDOException $e)
@@ -64,20 +65,30 @@
 
       // Update an existing record in the technologies table
       case "update":
-
+         
          // Sanitise URL supplied values
          $_post   = filter_var($_REQUEST['post'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
          $_recordID      = filter_var($_REQUEST['recordID'], FILTER_SANITIZE_NUMBER_INT);
+         $_postedLocation = filter_var($_REQUEST['postedLocation'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+         $_postalCode     = filter_var($_REQUEST['postalCode'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+         $_postedCity     = filter_var($_REQUEST['postedCity'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+         $_postedState    = filter_var($_REQUEST['postedState'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+         $_postedCountry  = filter_var($_REQUEST['postedCountry'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
 
          // Attempt to run PDO prepared statement
          try {
-            $sql  = "UPDATE posts SET post = :postDesc WHERE id = :recordID";
+            $sql  = "UPDATE posts SET post = :postDesc, PostedLocation = :postedLoc, PostalCode = :postalCode, City = :postedCity, State = :postedState, Country = :postedCountry WHERE id = :recordID";
             $stmt =  $pdo->prepare($sql);
             $stmt->bindParam(':postDesc', $_post, PDO::PARAM_STR);
             $stmt->bindParam(':recordID', $_recordID, PDO::PARAM_INT);
+            $stmt->bindParam(':postedLoc', $_postedLocation, PDO::PARAM_STR);
+            $stmt->bindParam(':postalCode', $_postalCode, PDO::PARAM_STR);
+            $stmt->bindParam(':postedCity', $_postedCity, PDO::PARAM_STR);
+            $stmt->bindParam(':postedState', $_postedState, PDO::PARAM_STR);
+            $stmt->bindParam(':postedCountry', $_postedCountry, PDO::PARAM_STR);
             $stmt->execute();
 
-            echo json_encode('Congratulations the record ' . $name . ' was updated');
+            echo json_encode('Congratulations the record was updated');
          }
          // Catch any errors in running the prepared statement
          catch(PDOException $e)
