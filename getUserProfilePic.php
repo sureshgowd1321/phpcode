@@ -23,7 +23,7 @@
     try {
 
         $_userId = $_GET['userId'];
-
+        
         $sql = "SELECT * FROM images_tbl ";
 
         $sql .= "Where userUid = :userId";

@@ -26,6 +26,7 @@
         $_userCity        = $_GET['postedCity'];
         $_userState       = $_GET['postedState'];
         $_userCountry     = $_GET['postedCountry'];
+      //  $_userUid         = $_GET['userUid'];
 
         // How many records per page
         $rpp = 4;
@@ -39,7 +40,7 @@
         }
 
         // SQL Query Design
-        $sql = "SELECT * FROM posts ";
+        $sql = "SELECT * FROM posts "; // WHERE CreatedById = :userId
         
         // Filter posts based on User opted filter
         if( $_userPostFilter === 'CT' ) {
@@ -66,6 +67,8 @@
         $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         
         // Binding Parameters
+        //$stmt-> bindParam(':userId', $_userUid, PDO::PARAM_STR);
+
         if( $_userPostFilter === 'CT' ) {
             $stmt-> bindParam(':userCity', $_userCity, PDO::PARAM_STR);
         }elseif( $_userPostFilter === 'ST' ) {

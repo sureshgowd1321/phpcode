@@ -112,7 +112,7 @@
             $stmt->bindParam(':recordID', $_recordID, PDO::PARAM_INT);
             $stmt->execute();
 
-            echo json_encode('Congratulations the record ' . $name . ' was removed');
+            echo json_encode('Congratulations the record was removed');
          }
          // Catch any errors in running the prepared statement
          catch(PDOException $e)
@@ -174,8 +174,7 @@
 
       break;
 
-
-      // Delete Comment
+      // Delete Comment from Comment Id - delete respective comment
       case "deleteComment":
       
             // Sanitise URL supplied values
@@ -190,6 +189,126 @@
                   $stmt->execute();
       
                   echo json_encode('Congratulations the record ' . $_commentId . ' was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+
+      break;
+
+      // Delete Comment from Post Id - delete respective comments comes under this post
+      case "deleteCommentsOfPost":
+      
+            // Sanitise URL supplied values
+            $_postId = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM comments WHERE postId = :postid";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postid', $_postId, PDO::PARAM_INT);
+                  $stmt->execute();
+      
+                  echo json_encode('Congratulations the record was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+
+      break;
+
+      // Delete Likes from Post Id - delete respective comments comes under this post
+      case "deleteLikesOfPost":
+      
+            // Sanitise URL supplied values
+            $_postId = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM likes WHERE PostId = :postid";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postid', $_postId, PDO::PARAM_INT);
+                  $stmt->execute();
+      
+                  echo json_encode('Congratulations the record was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+
+      break;
+
+      // Delete Dislikes from Post Id - delete respective comments comes under this post
+      case "deleteDislikesOfPost":
+      
+            // Sanitise URL supplied values
+            $_postId = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM dislikes WHERE PostId = :postid";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postid', $_postId, PDO::PARAM_INT);
+                  $stmt->execute();
+      
+                  echo json_encode('Congratulations the record was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+
+      break;
+
+      // Delete Comment from Post Id - delete respective comments comes under this post
+      case "deleteWishlistOfPost":
+      
+            // Sanitise URL supplied values
+            $_postId = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM wishlist WHERE PostId = :postid";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postid', $_postId, PDO::PARAM_INT);
+                  $stmt->execute();
+      
+                  echo json_encode('Congratulations the record was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+
+      break;
+
+      // Delete Comment from Post Id - delete respective comments comes under this post
+      case "deleteImagesOfPost":
+      
+            // Sanitise URL supplied values
+            $_postId = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM images_tbl WHERE PostId = :postId";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+                  $stmt->execute();
+      
+                  echo json_encode('Congratulations the record was removed');
             }
             // Catch any errors in running the prepared statement
             catch(PDOException $e)
@@ -381,6 +500,55 @@
             try {
                   $pdo  = new PDO($dsn, $un, $pwd);
                   $sql  = "DELETE FROM likes WHERE UserUid = :userUid AND PostId = :postId";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+                  $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
+                  $stmt->execute();
+
+                  echo json_encode('Congratulations the record was removed');
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+      break;
+
+      // Add Dislike for a post
+      case "addDislike":
+
+            // Sanitise URL supplied values
+            $_postId  = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+            $_userUid = filter_var($_REQUEST['userUid'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $sql   = "INSERT INTO dislikes(PostId, UserUid) VALUES(:postId, :userUid)";
+                  $stmt  = $pdo->prepare($sql);
+                  $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+                  $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
+                  $stmt->execute();
+
+                  echo json_encode(array('message' => 'Congratulations the record was added to the database'));
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+      break;
+
+      // Delete Dislike
+      case "deleteDislike":
+      
+            // Sanitise URL supplied values
+            $_postId  = filter_var($_REQUEST['postId'], FILTER_SANITIZE_NUMBER_INT);
+            $_userUid = filter_var($_REQUEST['userUid'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $pdo  = new PDO($dsn, $un, $pwd);
+                  $sql  = "DELETE FROM dislikes WHERE UserUid = :userUid AND PostId = :postId";
                   $stmt = $pdo->prepare($sql);
                   $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
                   $stmt->bindParam(':userUid', $_userUid, PDO::PARAM_STR);
