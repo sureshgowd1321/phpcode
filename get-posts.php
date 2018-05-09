@@ -26,6 +26,7 @@
         $_userCity        = $_GET['postedCity'];
         $_userState       = $_GET['postedState'];
         $_userCountry     = $_GET['postedCountry'];
+        $_userCreatedDate = $_GET['userCreatedDate'];
       //  $_userUid         = $_GET['userUid'];
 
         // How many records per page
@@ -40,23 +41,23 @@
         }
 
         // SQL Query Design
-        $sql = "SELECT * FROM posts "; // WHERE CreatedById = :userId
+        $sql = "SELECT * FROM posts WHERE CreatedDate >= :userCreatedDate "; // WHERE CreatedById = :userId
         
         // Filter posts based on User opted filter
         if( $_userPostFilter === 'CT' ) {
 
             // If User opted filter as City
-            $sql .= "WHERE City = :userCity ";
+            $sql .= "AND City = :userCity ";
 
         } elseif( $_userPostFilter === 'ST' ) {
 
             // If User opted filter as State
-            $sql .= "WHERE State = :userState ";
+            $sql .= "AND State = :userState ";
 
         } elseif( $_userPostFilter === 'CNTY' ) {
 
             // If User opted filter as Country
-            $sql .= "WHERE Country = :userCountry ";
+            $sql .= "AND Country = :userCountry ";
 
         }
         
@@ -67,7 +68,7 @@
         $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         
         // Binding Parameters
-        //$stmt-> bindParam(':userId', $_userUid, PDO::PARAM_STR);
+        $stmt-> bindParam(':userCreatedDate', $_userCreatedDate, PDO::PARAM_STR);
 
         if( $_userPostFilter === 'CT' ) {
             $stmt-> bindParam(':userCity', $_userCity, PDO::PARAM_STR);

@@ -324,7 +324,7 @@
             // Sanitise URL supplied values
             $_userId     = filter_var($_REQUEST['userId'], FILTER_SANITIZE_STRING);
             $_name       = filter_var($_REQUEST['name'], FILTER_SANITIZE_STRING);
-            //$_nickName   = filter_var($_REQUEST['nickName'], FILTER_SANITIZE_STRING);
+            $_gender     = filter_var($_REQUEST['gender'], FILTER_SANITIZE_STRING);
             $_email      = filter_var($_REQUEST['email'], FILTER_SANITIZE_STRING);
             $_locationId = filter_var($_REQUEST['locationId'], FILTER_SANITIZE_NUMBER_INT);
             $_totalStars = filter_var($_REQUEST['totalStars'], FILTER_SANITIZE_NUMBER_INT);
@@ -333,12 +333,12 @@
 
             // Attempt to run PDO prepared statement
             try {
-                  // Insert User data in User table in PHP
-                  $sql  = "INSERT INTO users(userUid, name, email, photoURL, totalstars, PostFilter, PostalCode) VALUES(:userId, :name, :email, '".$target_path."', :totalstars, '".$_postFilter."', :locationId )";
+                  // Insert User data in User table in PHP - '".$target_path."',
+                  $sql  = "INSERT INTO users(userUid, name, email, totalstars, PostFilter, PostalCode, Gender) VALUES(:userId, :name, :email, :totalstars, '".$_postFilter."', :locationId, :gender)";
                   $stmt = $pdo->prepare($sql);
                   $stmt->bindParam(':userId', $_userId, PDO::PARAM_STR);
                   $stmt->bindParam(':name', $_name, PDO::PARAM_STR);
-                  //$stmt->bindParam(':nickName', $_nickName, PDO::PARAM_STR);
+                  $stmt->bindParam(':gender', $_gender, PDO::PARAM_STR);
                   $stmt->bindParam(':email', $_email, PDO::PARAM_STR);
                   $stmt->bindParam(':locationId', $_locationId, PDO::PARAM_INT);
                   $stmt->bindParam(':totalstars', $_totalStars, PDO::PARAM_INT);
@@ -350,7 +350,7 @@
                   $stmt->bindParam(':userId', $_userId, PDO::PARAM_STR);
                   $stmt->execute();
 
-                  echo json_encode(array('message' => 'Congratulations the record ' . $_name . ' was added to the database'));
+                  echo json_encode(array('message' => 'Congratulations the record was added to the database'));
             }
             // Catch any errors in running the prepared statement
             catch(PDOException $e)
@@ -391,17 +391,19 @@
 
             // Sanitise URL supplied values
             $_userId     = filter_var($_REQUEST['userId'], FILTER_SANITIZE_STRING);
+            $_gender     = filter_var($_REQUEST['gender'], FILTER_SANITIZE_STRING);
             $_locationId = filter_var($_REQUEST['locationId'], FILTER_SANITIZE_STRING);
             $_userName = filter_var($_REQUEST['userName'], FILTER_SANITIZE_STRING);
 
             // Attempt to run PDO prepared statement
             try {
                   // Insert User data in User table in PHP , PostalCode =: postalCode
-                  $sql  = "UPDATE users SET name = :updatedName, PostalCode = :postalCode WHERE userUid = :userId";
+                  $sql  = "UPDATE users SET name = :updatedName, PostalCode = :postalCode, Gender = :gender WHERE userUid = :userId";
                   $stmt =  $pdo->prepare($sql);
                   $stmt->bindParam(':userId', $_userId, PDO::PARAM_STR);
                   $stmt->bindParam(':updatedName', $_userName, PDO::PARAM_STR);
                   $stmt->bindParam(':postalCode', $_locationId, PDO::PARAM_STR);
+                  $stmt->bindParam(':gender', $_gender, PDO::PARAM_STR);
 
                   $stmt->execute();
 
