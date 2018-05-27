@@ -564,6 +564,32 @@
                   echo $e->getMessage();
             }
       break;
+
+      // Add New Location
+      case "addNewLocation":
+
+            // Sanitise URL supplied values
+            $_country  = filter_var($_REQUEST['country'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+            $_state    = filter_var($_REQUEST['state'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+            $_city     = filter_var($_REQUEST['city'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+
+            // Attempt to run PDO prepared statement
+            try {
+                  $sql  = "INSERT INTO locations(Country, State, City, Custom) VALUES(:country, :state, :city, 1)";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->bindParam(':country', $_country, PDO::PARAM_STR);
+                  $stmt->bindParam(':state', $_state, PDO::PARAM_STR);
+                  $stmt->bindParam(':city', $_city, PDO::PARAM_STR);
+                  $stmt->execute();
+
+                  echo json_encode(array('message' => 'Congratulations the record was added to the database'));
+            }
+            // Catch any errors in running the prepared statement
+            catch(PDOException $e)
+            {
+                  echo $e->getMessage();
+            }
+      break;
    }
 
 ?>

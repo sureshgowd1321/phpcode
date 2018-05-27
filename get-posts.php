@@ -41,23 +41,23 @@
         }
 
         // SQL Query Design
-        $sql = "SELECT * FROM posts WHERE CreatedDate >= :userCreatedDate "; // WHERE CreatedById = :userId
+        $sql = "SELECT * FROM posts "; // WHERE CreatedDate >= :userCreatedDate
         
         // Filter posts based on User opted filter
         if( $_userPostFilter === 'CT' ) {
 
             // If User opted filter as City
-            $sql .= "AND City = :userCity ";
+            $sql .= "WHERE City = :userCity ";
 
         } elseif( $_userPostFilter === 'ST' ) {
 
             // If User opted filter as State
-            $sql .= "AND State = :userState ";
+            $sql .= "WHERE State = :userState ";
 
         } elseif( $_userPostFilter === 'CNTY' ) {
 
             // If User opted filter as Country
-            $sql .= "AND Country = :userCountry ";
+            $sql .= "WHERE Country = :userCountry ";
 
         }
         
@@ -68,7 +68,7 @@
         $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         
         // Binding Parameters
-        $stmt-> bindParam(':userCreatedDate', $_userCreatedDate, PDO::PARAM_STR);
+        //$stmt-> bindParam(':userCreatedDate', $_userCreatedDate, PDO::PARAM_STR);
 
         if( $_userPostFilter === 'CT' ) {
             $stmt-> bindParam(':userCity', $_userCity, PDO::PARAM_STR);
