@@ -25,7 +25,6 @@
         $_userId = $_GET['userId'];
 
         $sql = "SELECT * FROM users ";
-       // $sql = "SELECT Id, userUid, name, email, totalstars, photoURL, nickname, city, country FROM users ";
 
         $sql .= "Where userUid = :userId";
         $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

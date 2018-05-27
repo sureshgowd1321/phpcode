@@ -36,17 +36,24 @@ header('Access-Control-Allow-Origin: *');
 	 
 	 
     if (!empty($_FILES["file"]["name"])) {
-
+        
         $imgtype=$_FILES["file"]["type"];
         $ext= GetImageExtension($imgtype);
         $imagename=date("d-m-Y")."-".time().$ext;
+        //$target_path = $imagename;
         $target_path = "uploads/".$imagename;
-        $_userUid = $_POST['userUid'];
+        $_postId = $_POST['postId'];
 
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
 
-            $sql  = "UPDATE images_tbl SET images_path = '".$target_path."', submission_date = '".date("Y-m-d")."' WHERE userUid = '".$_userUid. "' ";
-            $stmt    = $pdo->prepare($sql);
+            // $sql  = "UPDATE images_tbl SET images_path = '".$target_path."', submission_date = '".date("Y-m-d")."' WHERE userUid = '".$_userUid. "' ";
+            $sql  = "INSERT INTO images_tbl(images_path, PostId) VALUES(:targetPath, :postId)";
+            $stmt = $pdo->prepare($sql);
+
+            // Bind Parameters
+            $stmt->bindParam(':targetPath', $target_path, PDO::PARAM_STR);
+            $stmt->bindParam(':postId', $_postId, PDO::PARAM_INT);
+
             $stmt->execute();
             
         }else{

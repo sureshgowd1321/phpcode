@@ -22,13 +22,13 @@
     // Attempt to query database table and retrieve data
     try {
 
-        $_userId = $_GET['userId'];
-        
-        $sql = "SELECT * FROM images_tbl ";
+        $_postId = $_GET['postId'];
 
-        $sql .= "Where userUid = :userId";
+        $sql = "SELECT * FROM images_tbl Where PostId = :postId";
+
         $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $stmt -> execute(array(':userId' => $_userId));
+
+        $stmt -> execute(array(':postId' => $_postId));
 
         $data = $stmt->fetch(PDO::FETCH_OBJ);
         
